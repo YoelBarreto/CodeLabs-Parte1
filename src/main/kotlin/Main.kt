@@ -1,7 +1,12 @@
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -12,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -49,21 +55,31 @@ fun LePreview() {
 
 @Composable
 fun App() {
-    val cosos = listOf(
-        "Alvaro | 53",
-        "Samuel | 81",
-        "Andrei | 40",
-        "Yoel | 5",
-        "Alejandro | 20"
-    )
+//    val cosos = listOf(
+//        "Alvaro | 53",
+//        "Samuel | 81",
+//        "Andrei | 40",
+//        "Yoel | 5",
+//        "Alejandro | 20"
+//    )
+
+    val names: List<String> = List(20) { "$it" }
     Surface(){
         Column(
             modifier = Modifier
                 .background(Color(0xFF4f7f9f))
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            cosos.forEach{ coso ->
+            names.forEach{ name ->
                 val expanded = remember { mutableStateOf(false) }
+                val extraPadding by animateDpAsState(
+                    if (expanded.value) 48.dp else 0.dp,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                ))
+                val currentPadding = extraPadding.coerceAtLeast(0.dp)
                 Box(modifier = Modifier.clip(shape = RoundedCornerShape(20.dp))){
                     Column(
                         modifier = Modifier
@@ -74,16 +90,14 @@ fun App() {
                             modifier = Modifier
                                 .fillMaxWidth()
                         ){
-                            LeGreeting(coso, Modifier.weight(1f), expanded)
+                            LeGreeting(name, Modifier.weight(1f), expanded)
                         }
-                        if (expanded.value) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(5.dp),
-                            ){
-                                Text(color = Color.White, text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.")
-                            }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(currentPadding),
+                        ){
+
                         }
                     }
                 }
@@ -116,7 +130,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Básico JetpackCompose",
-        state = rememberWindowState(width = 500.dp, height = 700.dp)
+        state = rememberWindowState(width = 600.dp, height = 700.dp)
     ) {
         LePreview()
     }
