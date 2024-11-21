@@ -1,16 +1,15 @@
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons.Filled
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,7 +89,7 @@ fun App() {
                             modifier = Modifier
                                 .fillMaxWidth()
                         ){
-                            LeGreeting(name, Modifier.weight(1f), expanded)
+                            LeGreeting("Pumba ${name}", Modifier.weight(1f), expanded)
                         }
                         Row(
                             modifier = Modifier
@@ -116,14 +115,27 @@ fun LeGreeting(name: String, modifier: Modifier = Modifier, expanded: MutableSta
         // fontWeight = FontWeight.Bold,
         color = Color.White
     )
-    Button(
+    IconButton(
+        onClick = { expanded.value = !expanded.value },
+    ) {
+        Icon(
+            imageVector = if (expanded.value) Filled.KeyboardArrowDown else Filled.KeyboardArrowUp,
+            contentDescription =
+            if (expanded.value) {
+                "Mostrar menos"
+            } else {
+                "Mostrar más"
+            }
+        )
+    }
+    /*Button(
         onClick = {
             expanded.value = !expanded.value
         },
         modifier = Modifier.padding(end = 5.dp)
     ) {
         Text(if (expanded.value) "Show less" else "Show more")
-    }
+    }*/
 }
 
 fun main() = application {
